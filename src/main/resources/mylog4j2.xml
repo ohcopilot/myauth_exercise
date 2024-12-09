@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 根节点有两个属性：status用来指定log4j2本身的打印日志级别，和monitorInterval用来指定log4j2自动重新配置的检测间隔时间 -->
+<Configuration status="WARN" monitorIterval="30">
+    <Properties>
+        <!--日志格式-->
+        <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %X{TRACE_ID} [%thread] %-5level %logger[%L] - %m%n"/>
+        <!--日志编码-->
+        <property name="CHARSET" value="utf-8"/>
+        <!--单个日志文件大小-->
+        <property name="MAX_FILE_SIZE" value="50MB"/>
+        <!--日志保存时间-->
+        <property name="MAX_HISTORY" value="P30D"/>
+        <!--日志根路径-->
+        <property name="BASE_LOG_PATH" value="./logs"/>
+        <!--日志应用名，例如拼接完整的日志路径：/data/logs/app/app-info.log-->
+        <property name="SERVER_NAME" value="mytest"/>
+    </Properties>
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PATTERN}" charset="${CHARSET}" />
+        </Console>
+        <!-- 程序每次运行时会清空，由append属性决定，适用于临时测试使用 -->
+        <File name="log" fileName="test.log" append="false">
+            <PatternLayout pattern="${PATTERN}" charset="${CHARSET}" />
+        </File>
+
+        <RollingFile name="LogInfo" fileName="${BASE_LOG_PATH}/${SERVER_NAME}-info.log" filePattern="${BASE_LOG_PATH}/${SERVER_NAME}-info.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${PATTERN}" charset="${CHARSET}" />
+            <Policies>
+                <!--每天滚动一次-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <!--或者日志达到50MB 滚动一次-->
+                <SizeBasedTriggeringPolicy size="50MB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="nomax">
+                <Delete basePath="${BASE_LOG_PATH}" maxDepth="2">
+                    <IfFileName glob="*-info.*.log"/>
+                    <IfLastModified age="${MAX_HISTORY}"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <RollingFile name="LogError" fileName="${BASE_LOG_PATH}/${SERVER_NAME}-error.log" filePattern="${BASE_LOG_PATH}/${SERVER_NAME}-error.%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="${PATTERN}" charset="${CHARSET}" />
+            <Policies>
+                <!--每天滚动一次-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <!--或者日志达到50MB 滚动一次-->
+                <SizeBasedTriggeringPolicy size="50MB"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="nomax">
+                <Delete basePath="${BASE_LOG_PATH}" maxDepth="2">
+                    <IfFileName glob="*-error.*.log"/>
+                    <IfLastModified age="${MAX_HISTORY}"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!-- 指定项目的根日志，如果没有单独指定Logger，默认使用Root日志输出 -->
+        <Root level="INFO">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="LogInfo"/>
+            <AppenderRef ref="LogError"/>
+        </Root>
+        <!-- 单独指定日志形式，比如要指定包下的class日志级别等 -->
+        <!--
+        <Logger name="org.karl" level="DEBUG">
+            <AppenderRef ref="" />
+        </Logger>
+        -->
+    </Loggers>
+
+</Configuration>
