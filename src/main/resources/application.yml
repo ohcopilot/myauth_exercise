@@ -1,5 +1,27 @@
+
 spring:
   application:
     name: mysecurity
+  datasource:
+    url: jdbc:mysql://localhost:8001/myauth?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: zhunn
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 7001
+      database: 1
 
+# log4j2
+logging:
+  config: classpath:mylog4j2.xml
 
+# spring security jwt
+jwt:
+  requestHeader: Authorization
+  secret: MY_SECRET_KEY
+  expiration: 604800
+  tokenHead: Bearer
+server:
+  port: 8081

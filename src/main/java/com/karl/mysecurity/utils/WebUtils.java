@@ -1,9 +1,8 @@
-package org.karl.mytest01.utils;
+package com.karl.mysecurity.utils;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
+import com.karl.mysecurity.entity.ResponseResult;
 import jakarta.servlet.http.HttpServletResponse;
-import org.karl.mytest01.entity.ResponseResult;
 
 import java.io.IOException;
 

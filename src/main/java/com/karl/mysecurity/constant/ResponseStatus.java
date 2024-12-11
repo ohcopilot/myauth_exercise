@@ -1,4 +1,4 @@
-package org.karl.mytest01.constant;
+package com.karl.mysecurity.constant;
 
 public enum ResponseStatus {
     /**

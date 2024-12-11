@@ -1,12 +1,12 @@
-package org.karl.mytest01.entity;
+package com.karl.mysecurity.entity;
 
-import org.karl.mytest01.constant.ResponseStatus;
+import com.karl.mysecurity.constant.ResponseStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class ResponseResult implements Serializable {
-    private int code;
+    private Integer code;
     private String msg;
     private Object data;
     private LocalDateTime timestamp;

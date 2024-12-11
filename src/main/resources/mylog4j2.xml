@@ -64,8 +64,12 @@
             <AppenderRef ref="LogError"/>
         </Root>
         <!-- 单独指定日志形式，比如要指定包下的class日志级别等 -->
+
+        <Logger name="org.springframework.security" level="TRACE">
+            <AppenderRef ref="CONSOLE" />
+        </Logger>
         <!--
-        <Logger name="org.karl" level="DEBUG">
+        <Logger name="org.apache.tomcat.util" level="INFO">
             <AppenderRef ref="" />
         </Logger>
         -->
