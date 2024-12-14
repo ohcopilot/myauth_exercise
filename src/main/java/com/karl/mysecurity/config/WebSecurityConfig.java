@@ -59,7 +59,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
                             .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                            .requestMatchers("/auth/**","/public/**").permitAll()
+                            .requestMatchers("/auth/**","/public/**","/error").permitAll()
                             .requestMatchers("/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })
