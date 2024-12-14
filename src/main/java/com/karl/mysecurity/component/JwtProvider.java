@@ -48,9 +48,9 @@ public class JwtProvider {
 
     public String generateToken(MyUserDetail userDetail){
         Map<String, Object> claims = new HashMap<>();
-        claims.put("USERID",userDetail.getUserId());
+        claims.put("USERID",userDetail.getId());
         claims.put("USERNAME",userDetail.getUsername());
-        claims.put("USERROLES",userDetail.getRoles());
+        claims.put("USERROLES",userDetail.getAuthorities());
         return assembleToken(claims);
     }
 

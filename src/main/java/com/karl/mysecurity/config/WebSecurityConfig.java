@@ -86,7 +86,7 @@ public class WebSecurityConfig {
                 })
                  */
                 //.userDetailsService(userDetailsService)
-                //.authenticationProvider(authenticationProvider())
+                .authenticationProvider(authenticationProvider())
                 .exceptionHandling(exception -> {
                     exception
                             .authenticationEntryPoint(jwtAuthExceptEntryPoint)
@@ -96,7 +96,7 @@ public class WebSecurityConfig {
                 //.securityContext(context->context.securityContextRepository(new NullSecurityContextRepository()))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-                return http.build();
+        return http.build();
     }
 
 
@@ -119,7 +119,7 @@ public class WebSecurityConfig {
         return source;
     }
 
-    /*
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -127,7 +127,7 @@ public class WebSecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-    */
+
 
 /*
     @Bean
