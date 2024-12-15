@@ -30,32 +30,31 @@ import java.util.stream.Collectors;
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private  JwtProvider jwtProvider;
-    @Autowired
-    private  MyUserDetailsCacheService myUserDetailsCacheService;
+    private final JwtProvider jwtProvider;
+    private final MyUserDetailsCacheService myUserDetailsCacheService;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
 
+    public JwtAuthenticationTokenFilter(MyUserDetailsCacheService myUserDetailsCacheService, JwtProvider jwtProvider) {
+        this.myUserDetailsCacheService = myUserDetailsCacheService;
+        this.jwtProvider = jwtProvider;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 拿到Authorization请求头内的信息
-        logger.info("进入jwt过滤器");
         String authToken = jwtProvider.getToken(request);
+        logger.info("进入jwt过滤器,携带token为：{}",authToken);
         if(StringUtils.isNotEmpty(authToken)) {
-            logger.info("拿到有效token");
             // 拿到token里面的登录账号
             String loginAccount = jwtProvider.getLoginAccount(authToken);
+            logger.info("拿到有效token，账户为{}",loginAccount);
             if(StringUtils.isNotEmpty(loginAccount) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                logger.info("拿到有效用户名");
                 MyUserDetail userDetail = myUserDetailsCacheService.getUserDetails(loginAccount);
                 if(userDetail != null  && jwtProvider.validateToken(authToken, userDetail)) {
                     logger.info("拿到有效用户信息缓存");
                     // 组装authentication对象，构造参数是Principal Credentials 与 Authorities
                     // 后面的拦截器里面会用到 grantedAuthorities 方法
-                    logger.info(userDetail.getUsername());
-                    logger.info(userDetail.getPassword());
 
                     /*Set<String> authorities = new HashSet<>();
                     authorities.add("ROLE_USER");
@@ -67,8 +66,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     userDetail = MyUserDetail.build(user);
 */
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
-                    logger.info(authentication.getName());
-                    logger.info(authentication.getPrincipal().toString()                                                                                                                                                                                                                                                              );
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

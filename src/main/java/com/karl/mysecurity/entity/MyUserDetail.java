@@ -13,24 +13,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MyUserDetail implements Serializable, UserDetails {
-    public Long getId() {
-        return id;
-    }
 
-    public String getEmail() {
-        return email;
-    }
+    private final Long id;
 
-    private Long id;
+    private final String username;
 
-    private String username;
-
-    private String email;
+    private final String email;
 
     @JsonIgnore
-    private String password;
+    private final String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,6 +49,13 @@ public class MyUserDetail implements Serializable, UserDetails {
                 user.getEmail(),
                 user.getPassword(),
                 authorities);
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.karl.mysecurity.api;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.karl.mysecurity.entity.ResponseResult;
 import com.karl.mysecurity.service.MyAuthService;

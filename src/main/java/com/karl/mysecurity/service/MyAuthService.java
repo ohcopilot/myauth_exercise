@@ -35,10 +35,7 @@ public class MyAuthService {
         if (authentication.isAuthenticated()) {
             logger.info("验证通过，{}", authentication.getName());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.info(authentication.getPrincipal().toString());
             MyUserDetail userDetail =(MyUserDetail) authentication.getPrincipal();
-            logger.info(userDetail.getUsername());
-            logger.info(userDetail.getPassword());
             myUserDetailsCacheService.setUserDetails(username, userDetail);
             String token = jwtProvider.generateToken(userDetail);
             result.put("data", token);

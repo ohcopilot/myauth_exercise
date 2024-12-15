@@ -10,15 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -54,53 +53,6 @@ public class WebSecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorizeRequests -> {
-                    authorizeRequests
-                            .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                            .requestMatchers("/auth/**","/public/**","/error").permitAll()
-                            .requestMatchers("/admin/**").hasRole("ADMIN")
-                            .anyRequest().authenticated();
-                })
-                .httpBasic(Customizer.withDefaults())
-                //.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(AbstractHttpConfigurer::disable)
-
-                //.cors(Customizer.withDefaults())
-                //.formLogin(AbstractHttpConfigurer::disable)
-                //.httpBasic(AbstractHttpConfigurer::disable)
-                /*.logout(logout->{
-                    logout.logoutUrl("/auth/logout");
-                })*/
-                /*.formLogin(form->{
-                    form
-                            .loginPage("/auth/login.html")
-                            .successHandler()
-                            .loginProcessingUrl("/auth/login");
-                })
-                .logout(logout->{
-                    logout
-                            .logoutUrl("/auth/logout")
-                            .logoutSuccessHandler();
-                })
-                 */
-                //.userDetailsService(userDetailsService)
-                .authenticationProvider(authenticationProvider())
-                .exceptionHandling(exception -> {
-                    exception
-                            .authenticationEntryPoint(jwtAuthExceptEntryPoint)
-                            .accessDeniedHandler(myAccessDeniedHandler);
-                })
-                //.requestCache(RequestCacheConfigurer::disable)
-                //.securityContext(context->context.securityContextRepository(new NullSecurityContextRepository()))
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
-
-
-    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
@@ -129,13 +81,30 @@ public class WebSecurityConfig {
     }
 
 
-/*
     @Bean
-    public UserDetailsService userDetailsService() {
-        return userDetailsService;
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorizeRequests -> {
+                    authorizeRequests
+                            .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                            .requestMatchers("/auth/**","/public/**","/error").permitAll()
+                            .requestMatchers("/admin/**").hasRole("ADMIN")
+                            .anyRequest().authenticated();
+                })
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .userDetailsService(userDetailsService)
+                .authenticationProvider(authenticationProvider())
+                .exceptionHandling(exception -> {
+                    exception
+                            .authenticationEntryPoint(jwtAuthExceptEntryPoint)
+                            .accessDeniedHandler(myAccessDeniedHandler);
+                })
+                .requestCache(RequestCacheConfigurer::disable)
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
-    @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }*/
+
 }
