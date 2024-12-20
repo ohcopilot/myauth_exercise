@@ -23,12 +23,13 @@ public class MyUserDetailsManagerService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //logger.info(new BCryptPasswordEncoder().encode("345"));
+        //logger.info(new BCryptPasswordEncoder().encode("123456"));
         logger.info("校验登录用户名为{}", username);
         MyUser user = userInfoService.getUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
+
         logger.info(JSONObject.toJSONString(user));
         MyUserDetail myUserDetail = MyUserDetail.build(user);
         logger.info(myUserDetail.getUsername());

@@ -8,7 +8,7 @@ public class MyUser {
     private String username;
     private String password;
     private String email;
-    private Set<String> roles = new HashSet<>();
+    private Set<MyRole> roles = new HashSet<>();
 
 
     public Long getId() {
@@ -45,11 +45,11 @@ public class MyUser {
     }
 
 
-    public Set<String> getRoles() {
+    public Set<MyRole> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(Set<MyRole> roles) {
         this.roles = roles;
     }
 }

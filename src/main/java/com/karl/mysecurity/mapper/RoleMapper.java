@@ -9,6 +9,6 @@ import java.util.List;
 
 @Mapper
 public interface RoleMapper extends BaseMapper<MyRole> {
-    @Select("SELECT * FROM role")
-    List<MyRole> selectCustom();
+    @Select("SELECT role.* FROM role,user_role WHERE role.id=user_role.roleid AND user_role.userid=#{userid}")
+    List<MyRole> selectCustom(Long userid);
 }

@@ -52,19 +52,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             if(StringUtils.isNotEmpty(loginAccount) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 MyUserDetail userDetail = myUserDetailsCacheService.getUserDetails(loginAccount);
                 if(userDetail != null  && jwtProvider.validateToken(authToken, userDetail)) {
-                    logger.info("拿到有效用户信息缓存");
+                    logger.info("拿到有效用户信息缓存{},{}",loginAccount,userDetail.toString());
                     // 组装authentication对象，构造参数是Principal Credentials 与 Authorities
                     // 后面的拦截器里面会用到 grantedAuthorities 方法
-
-                    /*Set<String> authorities = new HashSet<>();
-                    authorities.add("ROLE_USER");
-                    authorities.add("ROLE_ADMIN");
-                    MyUser user = new MyUser();
-                    user.setUsername("zhunn");
-                    user.setPassword("$2a$10$tnzpuiUm/ps8fu9y6I9TReVRQ7d1Hjtj23cNeDSgu/Fp47pI5qCLa");
-                    user.setRoles(authorities);
-                    userDetail = MyUserDetail.build(user);
-*/
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -20,17 +20,28 @@ public class MyUserDetail implements Serializable, UserDetails {
 
     private final String email;
 
+    @Override
+    public String toString() {
+        return "MyUserDetail{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", authorities=" + authorities +
+                '}';
+    }
+
     @JsonIgnore
     private final String password;
 
-    private final Collection<? extends GrantedAuthority> authorities;
+    private final Collection<SimpleGrantedAuthority> authorities;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<SimpleGrantedAuthority> getAuthorities() {
         return authorities;
     }
 
-    public MyUserDetail(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public MyUserDetail(Long id, String username, String email, String password, Collection<SimpleGrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -39,8 +50,8 @@ public class MyUserDetail implements Serializable, UserDetails {
     }
 
     public static MyUserDetail build(MyUser user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(SimpleGrantedAuthority::new)
+        List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                .map(myRole -> new SimpleGrantedAuthority(myRole.getName()))
                 .collect(Collectors.toList());
 
         return new MyUserDetail(
